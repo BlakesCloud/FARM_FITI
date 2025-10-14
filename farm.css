@@ -18,7 +18,7 @@
     --color-light:  #f0e39d;
     --color-black:#000;
     --color-bg:#a56204db;
-    --color-bg1:#293e07;
+    --color-bg1:#8c8d48;
     --color-bg2:#c0d555;
 
     --container-width-1g:76%;
@@ -101,7 +101,7 @@ img{
 
   nav{
     background: #f1f0b5;
-    color: #2a4a5c;
+    color: #1b625b;
     width:100vw ;
     height: 5rem;
     position: fixed;
@@ -144,6 +144,25 @@ nav button{
 .nav_menu a:hover{
     color: var(--color-bg1);
 }
+.logo{
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+.logo img{
+    width: 100px;
+    height: 100px;
+}
+
+.logo-text{
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color:#887c42;
+}
+.logo-text span{
+    color: var(--main-color);
+}
 
 .hero {
     background-image: linear-gradient(to left,rgba(135, 102, 30, 0.5),rgb(149, 216, 42, 0.5)),url(wakulima/A\ farmer\ is\ using\ precision\ equipment\ to\ apply\ fertilizer\ in\ lush\ green\ field\ showcasing\ modern\ agricultural\ practices\ scene\ captures\ essence\ of\ farming\ with\ vibrant\ crops\ and\ be.jpg);
@@ -162,9 +181,9 @@ nav button{
 }
 
 .hero-content h1{
-    color: #f0e39d;
-    margin-bottom: 1.5rem;
-    line-height: 2.4rem;
+    color: #fae8be;
+    margin-bottom: 1.8rem;
+    line-height: 2rem;
 }
 
 .hero-content p{
@@ -182,4 +201,12 @@ nav button{
   font-weight: bold;
   font-size: larger;
   cursor: pointer;
+}
+
+.hero-content img{
+    width: 200px;
+    height: 200px;
+    margin-left: 40%;
+    align-items: center;
+    justify-content: center;
 }
