@@ -196,7 +196,7 @@ nav button{
 }
 
 .hero-content button {
-  color: #2a4a5c;
+  color: #477b2f;
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   font-weight: bold;
   font-size: larger;
@@ -204,9 +204,50 @@ nav button{
 }
 
 .hero-content img{
-    width: 200px;
-    height: 200px;
-    margin-left: 40%;
+    width: 250px;
+    height: 250px;
+    margin-left: 35%;
     align-items: center;
     justify-content: center;
+}
+
+
+/* ========== UNIVERSAL RESPONSIVE STYLES ========== */
+
+/* Small devices (phones, up to 600px) */
+@media (max-width: 600px) {
+  body {
+    font-size: 14px;
+    overflow-x: hidden;
+  }
+
+  nav .nav_menu {
+    display: none;
+    flex-direction: column;
+    background-color: #111;
+    position: absolute;
+    top: 70px;
+    right: 0;
+    width: 100%;
+    text-align: center;
+    z-index: 1000;
+  }
+
+  nav .nav_menu li {
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  #open-menu-btn {
+    display: inline-block;
+  }
+
+  .hero-content h1 {
+    font-size: 1.5rem;
+  }
+
+  .hero-content p {
+    font-size: 0.9rem;
+    margin: 0 10px;
+  }
 }

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShambaPro - Find Farmers</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        /* Kenyan Agri-Tech Aesthetic: Lively greens, gradients */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #228B22 0%, #50C878 100%);
+            color: #fff;
+        }
+        .header {
+            background: linear-gradient(to right, #228B22, #50C878);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+        .farmer-card {
+            background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%);
+            border-radius: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .farmer-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        }
+        .crop-tag {
+            background: linear-gradient(to right, #FFD700, #FFA500);
+            color: #000;
+            border-radius: 9999px;
+            padding: 0.25rem 0.75rem;
+            margin-right: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: bold;
+        }
+        .crop-tag.maize { background: linear-gradient(to right, #F4A460, #D2691E); }
+        .crop-tag.tea { background: linear-gradient(to right, #556B2F, #808000); }
+        .crop-tag.coffee { background: linear-gradient(to right, #8B4513, #A52A2A); }
+        .crop-tag.avocados { background: linear-gradient(to right, #556B2F, #228B22); }
+        /* Add more for unique colors */
+        .verified-badge {
+            background: #FFD700;
+            color: #000;
+            border-radius: 9999px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+        }
+        #map {
+            height: 500px;
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .animate-pin {
+            animation: drop 0.5s ease-out;
+        }
+        @keyframes drop {
+            0% { transform: translateY(-50px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="header py-6 px-8 text-center">
+        <h1 class="text-4xl font-bold">ShambaPro: Connect with Local Farmers</h1>
+        <p class="text-lg mt-2">Discover vibrant Kenyan agriculture in your vicinity</p>
+    </header>
+
+    <!-- Controls -->
+    <section class="container mx-auto px-4 py-6">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+            <input id="searchInput" type="text" placeholder="Search by name, location, or county..." class="flex-grow px-4 py-2 rounded-full bg-white text-gray-800 border border-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
+            <select id="countyFilter" class="px-4 py-2 rounded-full bg-white text-gray-800 border border-green-700">
+                <option value="">All Counties</option>
+                <option value="Kiambu">Kiambu</option>
+                <option value="Kisumu">Kisumu</option>
+                <option value="Nakuru">Nakuru</option>
+                <option value="Uasin Gishu">Uasin Gishu</option>
+                <option value="Mombasa">Mombasa</option>
+                <option value="Nyeri">Nyeri</option>
+                <option value="Machakos">Machakos</option>
+                <option value="Kisii">Kisii</option>
+                <option value="Kakamega">Kakamega</option>
+                <option value="Bungoma">Bungoma</option>
+                <option value="Kericho">Kericho</option>
+                <option value="Trans Nzoia">Trans Nzoia</option>
+            </select>
+            <select id="cropFilter" multiple class="px-4 py-2 rounded-full bg-white text-gray-800 border border-green-700">
+                <option value="Tea">Tea</option>
+                <option value="Coffee">Coffee</option>
+                <option value="Maize">Maize</option>
+                <option value="Avocados">Avocados</option>
+                <option value="Bananas">Bananas</option>
+                <option value="Potatoes">Potatoes</option>
+                <option value="Beans">Beans</option>
+                <option value="Vegetables">Vegetables</option>
+                <option value="Wheat">Wheat</option>
+                <option value="Coconuts">Coconuts</option>
+                <option value="Mangoes">Mangoes</option>
+                <option value="Sugarcane">Sugarcane</option>
+                <option value="Dairy">Dairy</option>
+            </select>
+            <button id="toggleView" class="px-6 py-2 bg-green-700 text-white rounded-full hover:bg-green-600 transition">Switch to Map View</button>
+        </div>
+    </section>
+
+    <!-- Grid View -->
+    <section id="gridView" class="container mx-auto px-4 py-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Farmer cards will be inserted here by JS -->
+    </section>
+
+    <!-- Map View (hidden initially) -->
+    <section id="mapView" class="container mx-auto px-4 py-6 hidden">
+        <div id="map"></div>
+    </section>
+
+    <script>
+        // Sample Data: 12 Farmers
+        const farmers = [
+            { name: 'John Mwangi', location: 'Limuru', county: 'Kiambu', crops: ['Tea', 'Coffee'], size: '5 acres', exp: '10 years', method: 'Organic', verified: true, lat: -1.1069, lng: 36.6500 },
+            { name: 'Aisha Omondi', location: 'Kisumu', county: 'Kisumu', crops: ['Maize', 'Beans'], size: '10 acres', exp: '15 years', method: 'Conventional', verified: true, lat: -0.0917, lng: 34.7680 },
+            { name: 'Peter Kimani', location: 'Nakuru', county: 'Nakuru', crops: ['Potatoes', 'Vegetables'], size: '8 acres', exp: '8 years', method: 'Organic', verified: false, lat: -0.3031, lng: 36.0800 },
+            { name: 'Grace Cheruiyot', location: 'Eldoret', county: 'Uasin Gishu', crops: ['Maize', 'Wheat'], size: '20 acres', exp: '20 years', method: 'Conventional', verified: true, lat: 0.5143, lng: 35.2698 },
+            { name: 'Hassan Ali', location: 'Mombasa', county: 'Mombasa', crops: ['Coconuts', 'Bananas'], size: '3 acres', exp: '5 years', method: 'Organic', verified: true, lat: -4.0435, lng: 39.6682 },
+            { name: 'Mary Wambui', location: 'Nyeri', county: 'Nyeri', crops: ['Coffee', 'Tea'], size: '6 acres', exp: '12 years', method: 'Organic', verified: true, lat: -0.4201, lng: 36.9476 },
+            { name: 'David Mutua', location: 'Machakos', county: 'Machakos', crops: ['Avocados', 'Mangoes'], size: '7 acres', exp: '9 years', method: 'Conventional', verified: false, lat: -1.5200, lng: 37.2667 },
+            { name: 'Jane Nyaboke', location: 'Kisii', county: 'Kisii', crops: ['Bananas', 'Tea'], size: '4 acres', exp: '7 years', method: 'Organic', verified: true, lat: -0.6773, lng: 34.7796 },
+            { name: 'Samuel Shikuku', location: 'Kakamega', county: 'Kakamega', crops: ['Sugarcane', 'Maize'], size: '12 acres', exp: '18 years', method: 'Conventional', verified: true, lat: 0.2827, lng: 34.7519 },
+            { name: 'Esther Wekesa', location: 'Bungoma', county: 'Bungoma', crops: ['Coffee', 'Maize'], size: '9 acres', exp: '11 years', method: 'Organic', verified: false, lat: 0.5695, lng: 34.5584 },
+            { name: 'Joseph Kiprop', location: 'Kericho', county: 'Kericho', crops: ['Tea', 'Dairy'], size: '15 acres', exp: '25 years', method: 'Conventional', verified: true, lat: -0.3677, lng: 35.2863 },
+            { name: 'Anne Chepkoech', location: 'Kitale', county: 'Trans Nzoia', crops: ['Maize', 'Beans'], size: '10 acres', exp: '14 years', method: 'Organic', verified: true, lat: 1.0157, lng: 35.0062 }
+        ];
+
+        const nairobi = { lat: -1.2864, lng: 36.8172 };
+
+        // Haversine formula for distance
+        function getDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // km
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return (R * c).toFixed(1); // km
+        }
+
+        // Render farmers
+        function renderFarmers(filteredFarmers) {
+            const grid = document.getElementById('gridView');
+            grid.innerHTML = '';
+            filteredFarmers.forEach(farmer => {
+                const dist = getDistance(nairobi.lat, nairobi.lng, farmer.lat, farmer.lng);
+                const card = `
+                    <div class="farmer-card p-6 text-white">
+                        <div class="flex items-center mb-4">
+                            <div class="w-16 h-16 bg-gradient-to-br from-yellow-400 to-green-600 rounded-full flex items-center justify-center text-2xl font-bold">
+                                ${farmer.name.charAt(0)}
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-xl font-bold">${farmer.name} ${farmer.verified ? '<span class="verified-badge">Verified</span>' : ''}</h3>
+                                <p class="text-sm">${farmer.location}, ${farmer.county} - ${dist} km from Nairobi</p>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap mb-4">
+                            ${farmer.crops.map(crop => `<span class="crop-tag ${crop.toLowerCase()}">${crop}</span>`).join('')}
+                        </div>
+                        <p class="mb-2">Farm Size: ${farmer.size} | Experience: ${farmer.exp} | Method: ${farmer.method}</p>
+                        <button class="w-full py-2 bg-green-900 rounded-full hover:bg-green-800 transition">Connect Now</button>
+                    </div>
+                `;
+                grid.innerHTML += card;
+            });
+        }
+
+        // Init Map
+        let map;
+        function initMap() {
+            map = L.map('map').setView([nairobi.lat, nairobi.lng], 6);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+        }
+
+        // Render Markers
+        function renderMarkers(filteredFarmers) {
+            if (!map) initMap();
+            map.eachLayer(layer => { if (layer instanceof L.Marker) map.removeLayer(layer); });
+            filteredFarmers.forEach(farmer => {
+                const dist = getDistance(nairobi.lat, nairobi.lng, farmer.lat, farmer.lng);
+                const popup = `<b>${farmer.name}</b><br>${farmer.location}, ${farmer.county}<br>Crops: ${farmer.crops.join(', ')}<br>Distance: ${dist} km<br><button>Connect</button>`;
+                L.marker([farmer.lat, farmer.lng], { className: 'animate-pin' }).addTo(map).bindPopup(popup);
+            });
+        }
+
+        // Filter function
+        function filterFarmers() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const county = document.getElementById('countyFilter').value;
+            const crops = Array.from(document.getElementById('cropFilter').selectedOptions).map(opt => opt.value);
+            let filtered = farmers.filter(f => {
+                const matchesSearch = f.name.toLowerCase().includes(search) || f.location.toLowerCase().includes(search) || f.county.toLowerCase().includes(search);
+                const matchesCounty = !county || f.county === county;
+                const matchesCrops = !crops.length || crops.some(c => f.crops.includes(c));
+                return matchesSearch && matchesCounty && matchesCrops;
+            });
+            renderFarmers(filtered);
+            if (document.getElementById('mapView').classList.contains('hidden') === false) {
+                renderMarkers(filtered);
+            }
+        }
+
+        // Event Listeners
+        document.getElementById('searchInput').addEventListener('input', filterFarmers);
+        document.getElementById('countyFilter').addEventListener('change', filterFarmers);
+        document.getElementById('cropFilter').addEventListener('change', filterFarmers);
+
+        // Toggle View
+        document.getElementById('toggleView').addEventListener('click', () => {
+            const gridView = document.getElementById('gridView');
+            const mapView = document.getElementById('mapView');
+            const button = document.getElementById('toggleView');
+            if (gridView.classList.contains('hidden')) {
+                gridView.classList.remove('hidden');
+                mapView.classList.add('hidden');
+                button.textContent = 'Switch to Map View';
+            } else {
+                gridView.classList.add('hidden');
+                mapView.classList.remove('hidden');
+                button.textContent = 'Switch to Grid View';
+                if (!map) initMap();
+                renderMarkers(farmers); // Initial render
+            }
+            filterFarmers(); // Refresh
+        });
+
+        // Initial Render
+        renderFarmers(farmers);
+    </script>
+</body>
+</html>
