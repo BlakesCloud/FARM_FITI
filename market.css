@@ -1,0 +1,231 @@
+.hero {
+    background-image: linear-gradient(to left,rgba(135, 102, 30, 0.5),rgb(149, 216, 42, 0.5)),url(wakulima/Farmer\ Photos\ -\ Download\ Free\ High-Quality\ Pictures\ _\ Freepik.jpg);
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0.5rem 3rem #477b2f;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+
+}
+
+.hero-content h1{
+    color: var(--color-primary);
+    margin-bottom: 1.8rem;
+    line-height: 2rem;
+}
+
+.hero-content p{
+  color: #404913;
+    margin-bottom: 2rem;
+    font-size: 1.5rem;  
+    font-style: italic;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    line-height: 25px
+}
+
+.hero-content button {
+  color: #477b2f;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-weight: bold;
+  font-size: larger;
+  cursor: pointer;
+}
+
+.hero-content img{
+    width: 250px;
+    height: 250px;
+    margin-left: 35%;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.intro-container{
+    display:grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 2rem;
+    padding: 6rem 0;
+}
+
+.activity{
+    padding: 1.8rem;
+    background-color:var(--color-primary);
+    text-align: center;
+    transition: var(--transition);
+    box-shadow: var(--shadow-soft);
+    border-radius: 20px;
+}
+
+.activity:hover{
+    background: transparent;
+    border-color: var(--color-primary-light);
+    transform: scale(1.1);
+}
+
+.activity-info{
+    padding: 1.5rem;
+}
+
+.activity-info p{
+    margin: 1rem 0 2rem;
+    font-size: 0.85rem;
+}
+
+.activity-image img{
+    height: 300px;
+    object-fit:cover ;
+    aspect-ratio: 16/9;
+    border-radius: 10px;
+}
+
+.activity-image i{
+    margin-top: 0.5rem;
+    font-size: 2rem;
+}
+
+.description{
+    text-align: center;
+    margin-bottom:1rem;
+    justify-content: center;
+}
+
+.description p{
+    margin-bottom: 2px;
+    font-size: larger;
+    text-align: center;
+    justify-content: center; 
+}
+
+.description h1{
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.description h5{
+     margin-top: 1.5rem;
+    margin-bottom: 20px;
+    background-color: var(--color-primary);
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  font-size: large;
+  box-sizing: border-box;
+  border-radius: 50px; 
+}
+
+.activities-container{
+    display:grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 2rem;
+    padding: 3.5rem;
+}
+
+
+.search-box {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  background: var(--color-bg1);
+  padding: 16px 16px;
+  border-radius: 8px;
+}
+
+.search-box input,
+.search-box button {
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: none;
+}
+
+.search-box input {
+  width: 200px;
+  background-color:var(--color-light);
+}
+
+.explore-btn {
+  background: var(--color-primary);
+  color: #404913;
+  font-weight: 600;
+}
+
+
+.team-container{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 2.5rem;
+    max-width: 90vw;
+    margin-left: 4rem;
+}
+
+.team-member{
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    background-color:var(--color-primary);
+    box-shadow: var(--shadow-soft);
+    border-radius: 20px;
+
+}
+
+.team-member:hover{
+    background: transparent;
+    border-color: var(--color-primary-light);
+}
+
+.team-member-image img{
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    filter: saturate(0);
+    border-radius: 10px;
+    padding: 0.5rem;
+  
+    
+}
+
+.team-member-info{
+    text-align: center;
+    margin-top: 1.3rem;
+}
+
+.team-member-info p{
+    color: var(--color-primary-light);
+}
+
+.team-member-image img:hover{
+    filter: saturate(1);
+    border-color: var(--color-primary-light);
+}
+
+.team-member-socials{
+    position: absolute;
+    top: 50%;
+    right: -100%;
+    display: flex;
+    flex-direction: column;
+    background: #585c2a;
+    border-radius: 1rem 0 0 1rem;
+    box-shadow: -2rem 0 2rem #585c2a;
+    transition: var(--transition);
+}
+
+.team-member-socials a{
+  padding: 0.8rem;
+}
+.team-member-socials i{
+    color: #27e9b5;
+    font-size: large;
+}
+
+.team-member:hover 
+.team-member-socials{
+    right: 0;
+}

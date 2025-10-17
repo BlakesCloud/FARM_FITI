@@ -8,17 +8,17 @@
     box-sizing: border-box;
 }
 :root{
-    --color-primary:#5a9294;
+    --color-primary:#1b625b;
     --color-success:#27e9b5;
     --color-warning:#f7c94b;
     --color-danger:#572c2c;
     --color-danger-variant: rgba(138,59,8,0.8);
     --color-white:#fff;
   
-    --color-light:  #f0e39d;
-    --color-black:#000;
+    --color-light:  #fbefab;
+    --color-words:#404913;
     --color-bg:#a56204db;
-    --color-bg1:#8c8d48;
+    --color-bg1:#b9ba8b;
     --color-bg2:#c0d555;
 
     --container-width-1g:76%;
@@ -26,17 +26,22 @@
     --container-width-sm:94%;
 
     --transition:all 400ms ease;
+    --shadow-soft:inset 0 0.5rem 1rem #294b42;
+
 }
 body{
+  background: var(--color-bg1);
      font-family: "Montserrat", sans-serif;
      line-height: 25px;
-     color: var(--color-white);
+     color: var(--color-light);
 }
  .container{
     width: var(--container-width-1g);
     margin: 0 auto;
   }
-
+section{
+    padding: 2.5rem 0;
+}
 
   section h2{
     text-align: center;
@@ -100,7 +105,7 @@ img{
   }
 
   nav{
-    background: #f1f0b5;
+    background: transparent;
     color: #1b625b;
     width:100vw ;
     height: 5rem;
@@ -111,8 +116,7 @@ img{
 
   /* change nav bar styles*/
 .window-scroll{
-    background-color: var(--color-primary-deep);
-    box-shadow: var(--shadow-soft);
+    background-color: var(--color-light);
 }
 .nav_container{
     height: 100%;
@@ -181,7 +185,7 @@ nav button{
 }
 
 .hero-content h1{
-    color: #fae8be;
+    color: var(--color-primary);
     margin-bottom: 1.8rem;
     line-height: 2rem;
 }
